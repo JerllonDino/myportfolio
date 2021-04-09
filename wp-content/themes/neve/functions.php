@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Neve functions.php file
  *
@@ -8,15 +9,15 @@
  * @package Neve
  */
 
-define( 'NEVE_VERSION', '2.10.4' );
-define( 'NEVE_INC_DIR', trailingslashit( get_template_directory() ) . 'inc/' );
-define( 'NEVE_ASSETS_URL', trailingslashit( get_template_directory_uri() ) . 'assets/' );
-define( 'NEVE_MAIN_DIR', get_template_directory() . '/' );
+define('NEVE_VERSION', '2.10.4');
+define('NEVE_INC_DIR', trailingslashit(get_template_directory()) . 'inc/');
+define('NEVE_ASSETS_URL', trailingslashit(get_template_directory_uri()) . 'assets/');
+define('NEVE_MAIN_DIR', get_template_directory() . '/');
 
-if ( ! defined( 'NEVE_DEBUG' ) ) {
-	define( 'NEVE_DEBUG', false );
+if (!defined('NEVE_DEBUG')) {
+	define('NEVE_DEBUG', false);
 }
-define( 'NEVE_NEW_DYNAMIC_STYLE', true );
+define('NEVE_NEW_DYNAMIC_STYLE', true);
 /**
  * Buffer which holds errors during theme inititalization.
  *
@@ -26,16 +27,16 @@ global $_neve_bootstrap_errors;
 
 $_neve_bootstrap_errors = new WP_Error();
 
-if ( version_compare( PHP_VERSION, '5.5' ) < 0 ) {
+if (version_compare(PHP_VERSION, '5.5') < 0) {
 	$_neve_bootstrap_errors->add(
 		'minimum_php_version',
 		sprintf(
-		/* translators: %s message to upgrade PHP to the latest version */
-			__( "Hey, we've noticed that you're running an outdated version of PHP which is no longer supported. Make sure your site is fast and secure, by %1\$s. Neve's minimal requirement is PHP%2\$s.", 'neve' ),
-			sprintf(
 			/* translators: %s message to upgrade PHP to the latest version */
+			__("Hey, we've noticed that you're running an outdated version of PHP which is no longer supported. Make sure your site is fast and secure, by %1\$s. Neve's minimal requirement is PHP%2\$s.", 'neve'),
+			sprintf(
+				/* translators: %s message to upgrade PHP to the latest version */
 				'<a href="https://wordpress.org/support/upgrade-php/">%s</a>',
-				__( 'upgrading PHP to the latest version', 'neve' )
+				__('upgrading PHP to the latest version', 'neve')
 			),
 			'5.5+'
 		)
@@ -47,20 +48,20 @@ if ( version_compare( PHP_VERSION, '5.5' ) < 0 ) {
  * @var array Files to check for existance.
  */
 
-$_files_to_check = defined( 'NEVE_IGNORE_SOURCE_CHECK' ) ? [] : [
+$_files_to_check = defined('NEVE_IGNORE_SOURCE_CHECK') ? [] : [
 	NEVE_MAIN_DIR . 'vendor/autoload.php',
 	NEVE_MAIN_DIR . 'style-main.css',
 	NEVE_MAIN_DIR . 'assets/js/build/modern/frontend.js',
 	NEVE_MAIN_DIR . 'dashboard/build/dashboard.js',
 	NEVE_MAIN_DIR . 'inc/customizer/controls/react/bundle/controls.js',
 ];
-foreach ( $_files_to_check as $_file_to_check ) {
-	if ( ! is_file( $_file_to_check ) ) {
+foreach ($_files_to_check as $_file_to_check) {
+	if (!is_file($_file_to_check)) {
 		$_neve_bootstrap_errors->add(
 			'build_missing',
 			sprintf(
-			/* translators: %s: commands to run the theme */
-				__( 'You appear to be running the Neve theme from source code. Please finish installation by running %s.', 'neve' ), // phpcs:ignore WordPress.Security.EscapeOutput
+				/* translators: %s: commands to run the theme */
+				__('You appear to be running the Neve theme from source code. Please finish installation by running %s.', 'neve'), // phpcs:ignore WordPress.Security.EscapeOutput
 				'<code>composer install &amp;&amp; yarn install --frozen-lockfile &amp;&amp; yarn run build</code>'
 			)
 		);
@@ -73,19 +74,20 @@ foreach ( $_files_to_check as $_file_to_check ) {
  * @internal
  * @global WP_Error $_neve_bootstrap_errors
  */
-function _neve_bootstrap_errors() {
+function _neve_bootstrap_errors()
+{
 	global $_neve_bootstrap_errors;
-	printf( '<div class="notice notice-error"><p>%1$s</p></div>', $_neve_bootstrap_errors->get_error_message() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	printf('<div class="notice notice-error"><p>%1$s</p></div>', $_neve_bootstrap_errors->get_error_message()); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
-if ( $_neve_bootstrap_errors->has_errors() ) {
+if ($_neve_bootstrap_errors->has_errors()) {
 	/**
 	 * Add notice for PHP upgrade.
 	 */
-	add_filter( 'template_include', '__return_null', 99 );
-	switch_theme( WP_DEFAULT_THEME );
-	unset( $_GET['activated'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-	add_action( 'admin_notices', '_neve_bootstrap_errors' );
+	add_filter('template_include', '__return_null', 99);
+	switch_theme(WP_DEFAULT_THEME);
+	unset($_GET['activated']); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	add_action('admin_notices', '_neve_bootstrap_errors');
 
 	return;
 }
@@ -97,13 +99,14 @@ if ( $_neve_bootstrap_errors->has_errors() ) {
  *
  * @return array
  */
-function neve_filter_sdk( $products ) {
+function neve_filter_sdk($products)
+{
 	$products[] = get_template_directory() . '/style.css';
 
 	return $products;
 }
 
-add_filter( 'themeisle_sdk_products', 'neve_filter_sdk' );
+add_filter('themeisle_sdk_products', 'neve_filter_sdk');
 
 require_once 'globals/migrations.php';
 require_once 'globals/utilities.php';
